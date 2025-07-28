@@ -13,95 +13,145 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base Styles with Smooth Scroll */
+/* Base Styles */
 html {
     scroll-behavior: smooth;
 }
 
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    @apply bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 min-h-screen;
+    background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+    color: #111827;
+    min-height: 100vh;
     line-height: 1.6;
 }
 
-/* Card with Glass Morphism Effect */
+/* Dark Mode Support */
+body.dark {
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #f3f4f6;
+}
+
+/* Card with Glass Morphism */
 .todo-card {
-    @apply backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-xl overflow-hidden;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
     box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     transition: var(--transition);
 }
 
-/* Header with Gradient Animation */
+.dark .todo-card {
+    background-color: rgba(31, 41, 55, 0.8);
+}
+
+/* Header */
 .todo-header {
-    @apply p-6 text-white relative overflow-hidden;
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
 }
 
 .todo-header::after {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     animation: shimmer 3s infinite linear;
 }
 
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* Task Items with Interactive Animations */
+/* Task Items */
 .task-item {
-    @apply p-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition-all duration-300;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    transition: var(--transition);
     animation: fadeIn 0.5s ease-out forwards;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.dark .task-item {
+    border-bottom-color: #374151;
+}
+
+.task-item:last-child {
+    border-bottom: none;
 }
 
 .task-item:hover {
-    @apply bg-gray-50 dark:bg-gray-700/50 transform scale-[1.01];
+    background-color: #f9fafb;
+    transform: scale(1.01);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Checkbox with Custom Animation */
+.dark .task-item:hover {
+    background-color: rgba(55, 65, 81, 0.5);
+}
+
+/* Checkbox */
 .task-checkbox {
-    @apply h-6 w-6 rounded-full border-2 border-gray-300 dark:border-gray-600 appearance-none cursor-pointer transition-all;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 9999px;
+    border: 2px solid #d1d5db;
+    appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
     position: relative;
 }
 
+.dark .task-checkbox {
+    border-color: #4b5563;
+}
+
 .task-checkbox:checked {
-    @apply bg-primary border-primary;
+    background-color: var(--primary);
+    border-color: var(--primary);
     animation: bounce 0.5s;
 }
 
 .task-checkbox:checked::after {
     content: '✓';
-    @apply absolute text-white text-sm font-bold;
+    position: absolute;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: bold;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
 }
 
-@keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
-
-/* Buttons with Ripple Effect */
+/* Buttons */
 .btn {
-    @apply relative overflow-hidden px-4 py-2 rounded-lg font-medium transition-all duration-300;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: var(--transition);
 }
 
 .btn-primary {
-    @apply bg-primary hover:bg-primary-light text-white;
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-light);
 }
 
 .btn-danger {
-    @apply bg-danger hover:bg-red-700 text-white;
+    background-color: var(--danger);
+    color: white;
 }
 
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Ripple Effect */
 .ripple {
     position: absolute;
     border-radius: 50%;
@@ -111,6 +161,98 @@ body {
     pointer-events: none;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .todo-card {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        min-height: 100vh;
+    }
+    
+    .task-actions {
+        opacity: 1 !important;
+    }
+    
+    .task-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+    }
+}
+
+/* Dark Mode Toggle */
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    height: 1.5rem;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d1d5db;
+    transition: var(--transition);
+    border-radius: 9999px;
+}
+
+.dark .slider {
+    background-color: #4b5563;
+}
+
+.slider:before {
+    content: '';
+    position: absolute;
+    height: 1.25rem;
+    width: 1.25rem;
+    left: 0.25rem;
+    bottom: 0.125rem;
+    background-color: white;
+    transition: var(--transition);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark .slider:before {
+    background-color: #e5e7eb;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(1.5rem);
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
 @keyframes ripple {
     to {
         transform: scale(4);
@@ -118,50 +260,6 @@ body {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .todo-card {
-        @apply rounded-none border-0 shadow-none;
-        min-height: 100vh;
-    }
-    
-    .task-actions {
-        @apply opacity-100 !important;
-    }
-    
-    .task-text {
-        @apply truncate max-w-[180px];
-    }
-}
-
-/* Dark Mode Toggle Switch */
-.theme-switch {
-    @apply relative inline-block w-12 h-6;
-}
-
-.theme-switch input {
-    @apply opacity-0 w-0 h-0;
-}
-
-.slider {
-    @apply absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 dark:bg-gray-600 transition-all rounded-full;
-}
-
-.slider:before {
-    content: '';
-    @apply absolute h-5 w-5 left-1 bottom-0.5 bg-white dark:bg-gray-200 transition-all rounded-full;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-input:checked + .slider {
-    @apply bg-primary;
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-/* Loading Animation */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
