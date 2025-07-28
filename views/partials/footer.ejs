@@ -1,2 +1,22 @@
+    <!-- Footer Content -->
+    <footer class="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
+        <p>© <%= new Date().getFullYear() %> To-Do List App. All rights reserved.</p>
+        <p class="mt-1">Made with <span class="text-red-500">♥</span> and <span class="text-primary">JavaScript</span></p>
+    </footer>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
