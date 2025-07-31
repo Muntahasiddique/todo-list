@@ -1,96 +1,192 @@
-<%- include('partials/header') %>
+<!DOCTYPE html>
+<html lang="en" class="<%= darkMode ? 'dark' : '' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    keyframes: {
+                        pulse: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.5' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        ripple: {
+                            'to': {
+                                transform: 'scale(4)',
+                                opacity: '0'
+                            }
+                        }
+                    },
+                    animation: {
+                        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        fadeIn: 'fadeIn 0.3s ease-out forwards',
+                        ripple: 'ripple 600ms linear'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div class="container mx-auto p-4 max-w-2xl">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Enhanced To-Do List
+                    </h1>
+                    <p class="text-sm opacity-90 mt-1">Stay organized and productive</p>
+                </div>
+                
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+                    <svg id="theme-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="theme-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
 
-<div class="container mx-auto p-4 max-w-md">
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-<div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white flex justify-between items-center">
-    <div>
-        <h1 class="text-2xl font-bold flex items-center">
-            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            To-Do List
-        </h1>
-        <p class="text-sm opacity-90 mt-1">Stay organized and productive</p>
-    </div>
-    
-    <!-- Theme Toggle Button -->
-    <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-        <svg id="theme-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path id="theme-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-    </button>
-</div>
+            <!-- Main Content -->
+            <div class="p-6">
+                <!-- Search and Sort Controls -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <input type="text" id="task-search" placeholder="Search tasks..." 
+                           class="flex-grow p-2 border rounded-lg dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="sort-select" class="p-2 border rounded-lg dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="priority">Sort by Priority</option>
+                        <option value="date">Sort by Date Added</option>
+                        <option value="completed">Sort by Completion</option>
+                        <option value="dueDate">Sort by Due Date</option>
+                    </select>
+                </div>
 
-    <!-- Task Input -->
-    <div class="p-6">
-      <form id="task-form" class="flex mb-6">
-        <input 
-          type="text" 
-          id="task-input"
-          placeholder="Add a new task..." 
-          class="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700"
-          required
-        >
-        <button 
-          type="submit"
-          id="submit-btn"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-r-lg transition-colors flex items-center"
-        >
-          <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Add
-        </button>
-      </form>
+                <!-- Task Input Form -->
+                <form id="task-form" class="mb-6">
+                    <div class="flex mb-2">
+                        <input 
+                            type="text" 
+                            id="task-input"
+                            placeholder="Add a new task..." 
+                            class="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700"
+                            required
+                        >
+                        <button 
+                            type="submit"
+                            id="submit-btn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-r-lg transition-colors flex items-center"
+                        >
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Add
+                        </button>
+                    </div>
 
-      <!-- Priority Selector -->
-      <div class="flex space-x-2 mb-6">
-        <button type="button" data-priority="high" class="priority-btn bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-3 py-1 rounded-full text-xs font-medium">
-          High
-        </button>
-        <button type="button" data-priority="medium" class="priority-btn bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 px-3 py-1 rounded-full text-xs font-medium">
-          Medium
-        </button>
-        <button type="button" data-priority="low" class="priority-btn bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-xs font-medium">
-          Low
-        </button>
-      </div>
+                    <!-- Additional Task Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Due Date</label>
+                            <input type="date" id="task-due" 
+                                   class="w-full p-2 border rounded-lg dark:bg-gray-700">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categories (comma separated)</label>
+                            <input type="text" id="task-categories" placeholder="work, personal, shopping" 
+                                   class="w-full p-2 border rounded-lg dark:bg-gray-700">
+                        </div>
+                    </div>
 
-      <!-- Stats -->
-      <div class="flex justify-between mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
-        <div class="text-center">
-          <span id="total-count" class="block text-xl font-bold">0</span>
-          <span class="text-xs text-gray-500 dark:text-gray-400">TOTAL</span>
+                    <!-- Priority Selector -->
+                    <div class="flex space-x-2 mb-6">
+                        <button type="button" data-priority="high" class="priority-btn bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-3 py-1 rounded-full text-xs font-medium">
+                            High
+                        </button>
+                        <button type="button" data-priority="medium" class="priority-btn bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 px-3 py-1 rounded-full text-xs font-medium">
+                            Medium
+                        </button>
+                        <button type="button" data-priority="low" class="priority-btn bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-xs font-medium">
+                            Low
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Stats -->
+                <div class="flex justify-between mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <div class="text-center">
+                        <span id="total-count" class="block text-xl font-bold">0</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">TOTAL</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="done-count" class="block text-xl font-bold text-green-500">0</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">DONE</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="high-count" class="block text-xl font-bold text-red-500">0</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">HIGH</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="medium-count" class="block text-xl font-bold text-yellow-500">0</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">MEDIUM</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="low-count" class="block text-xl font-bold text-green-500">0</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">LOW</span>
+                    </div>
+                </div>
+
+                <!-- Task List -->
+                <div class="task-list max-h-96 overflow-y-auto mb-4">
+                    <ul id="task-list" class="space-y-2">
+                        <!-- Tasks will be inserted here by JavaScript -->
+                        <li class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <svg class="w-12 h-12 mx-auto opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <p class="mt-2">No tasks yet</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button id="clear-all" class="flex-1 py-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 flex items-center justify-center transition-colors border border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Clear All
+                    </button>
+                    <button id="export-btn" class="flex-1 py-2 text-green-500 hover:text-green-700 dark:hover:text-green-400 flex items-center justify-center transition-colors border border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export
+                    </button>
+                    <button id="import-btn" class="flex-1 py-2 text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 flex items-center justify-center transition-colors border border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        Import
+                    </button>
+                    <input type="file" id="import-input" accept=".json" class="hidden">
+                </div>
+            </div>
         </div>
-        <div class="text-center">
-          <span id="done-count" class="block text-xl font-bold text-green-500">0</span>
-          <span class="text-xs text-gray-500 dark:text-gray-400">DONE</span>
-        </div>
-      </div>
-
-      <!-- Task List -->
-      <div class="task-list max-h-96 overflow-y-auto">
-        <ul id="task-list" class="space-y-2">
-          <!-- Tasks will be inserted here by JavaScript -->
-          <li class="text-center py-8 text-gray-500 dark:text-gray-400">
-            <svg class="w-12 h-12 mx-auto opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p class="mt-2">No tasks yet</p>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Clear All Button -->
-      <button id="clear-all" class="w-full mt-4 py-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 flex items-center justify-center transition-colors">
-        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-        Clear All
-      </button>
     </div>
-  </div>
-</div>
 
-<script src="/scripts/scripts.js"></script>
-<%- include('partials/footer') %>
+    <script src="/scripts/scripts.js"></script>
+</body>
+</html>

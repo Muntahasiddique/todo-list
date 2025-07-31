@@ -16,6 +16,3 @@ function todohome(req, res) {
 module.exports = {
     todohome
 };
-module.exports={
-    todohome:todohome
-}
